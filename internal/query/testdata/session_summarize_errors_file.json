@@ -23,7 +23,7 @@
         "file:4002",
         "file:4003"
       ],
-      "cohesion_score": 1.9999999999999998
+      "cohesion_score": 2
     },
     {
       "cluster_id": "c2",

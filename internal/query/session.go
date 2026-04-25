@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
 	"os"
 	"sort"
 	"strings"
@@ -490,13 +491,14 @@ func (s *Session) SummarizeErrors(ctx context.Context, args SummarizeErrorsArgs)
 		}
 		rep := lineIDsOf(ids)[:repN]
 		cid := g.ID
+		score := math.Round(g.Score*1e6) / 1e6
 		clusters = append(clusters, SummarizeCluster{
 			ClusterID:      cid,
 			Size:           g.Size,
 			Signature:      g.Signature,
 			LineIDs:        lineIDsOf(ids),
 			Representative: rep,
-			Score:          g.Score,
+			Score:          score,
 		})
 		s.mu.Lock()
 		s.clusterToLines[cid] = lineIDsOf(ids)
