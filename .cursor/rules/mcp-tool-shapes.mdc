@@ -1,0 +1,48 @@
+---
+description: MCP tool schema guidance for anti-hallucination log queries
+globs: *
+alwaysApply: true
+---
+
+## Tool output must be structured (not prose)
+
+Trailhead’s anti-hallucination design depends on tools returning **JSON objects** with explicit fields, not narrative paragraphs.
+
+### Prefer fields like
+
+- `counts`, `buckets`, `coverage`
+- `clusters`: ids + sizes + labels/signatures
+- `representative_lines`: small samples per cluster
+- `line_ids`: stable session-scoped IDs for any returned line
+- `timestamps`: machine-readable timestamps (RFC3339)
+- `query`: echo inputs / normalized query for reproducibility
+
+Avoid returning “summary_text” as the primary payload. If any prose exists, it must be clearly secondary.
+
+## Every returned line must have an ID
+
+If a tool returns any log content (full line or excerpt), it must include a corresponding line ID:
+
+- IDs should be short and ergonomic (e.g. `log:4021`), and stable within a session.
+- If multiple sources exist, prefer source-prefixed IDs (e.g. `loki:4021`, `docker:98`) to prevent collisions.
+
+## Schema should make the right behavior easy
+
+Tool descriptions should explicitly instruct agents:
+
+- cite line IDs when reporting findings
+- separate **aggregate** vs **evidence** fields
+- fall back to raw lines only when clustering/summarization isn’t reliable (e.g. “too few errors to cluster”)
+
+## Align tool names to the PRD (expected interface)
+
+Design around these tool concepts (even before implementation):
+
+- `search`
+- `summarize_errors`
+- `sample_cluster`
+- `correlated_events`
+- `diff_error_rate`
+- `get_lines_by_id`
+
+If adding new tools, keep them query-like (read-only, bounded outputs, citeable).

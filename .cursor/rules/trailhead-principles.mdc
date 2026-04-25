@@ -1,0 +1,38 @@
+---
+description: Trailhead product principles and investigation workflow (query-not-dump, self-hosted)
+globs: *
+alwaysApply: true
+---
+
+## What Trailhead is
+
+Trailhead is a self-hosted MCP server for investigating production logs via **query primitives** (summaries, clustering, sampling, correlation), not raw log dumps.
+
+## Non-negotiable principles
+
+- **Query, don’t dump**: prefer aggregate queries and representative samples over raw tails.
+- **Evidence-first**: findings must be grounded in cited log line IDs (see `citations-and-claims` rule).
+- **Never leaves infra**: design and docs must not assume any telemetry/SaaS mode; avoid any behavior that would exfiltrate logs.
+
+## Default investigation workflow (logs)
+
+When debugging an incident, use this ladder (top → bottom) and stop as soon as you have enough evidence:
+
+1. **Summarize**: get counts, top error types, cluster coverage, time buckets.
+2. **Cluster**: group similar errors; prefer message-shape clustering.
+3. **Sample**: fetch a small number of representative lines per cluster, with stable session IDs.
+4. **Correlate**: look around key timestamps; correlate with deploy markers / commits if available.
+5. **Diff**: compare error rates vs baseline (yesterday same time, previous hour, etc.).
+6. **Raw lines (last resort)**: only if the structured path can’t answer the question.
+
+## Handling raw logs safely (last resort)
+
+If you must inspect raw lines:
+
+- Keep excerpts **small** and **purposeful** (e.g., 20–50 lines max).
+- Prefer **filtered** slices (service, severity, endpoint, request id).
+- Avoid printing secrets/PII. If unavoidable, redact and cite the redacted line IDs.
+
+## Scope discipline (v0.1 mindset)
+
+Trailhead is **logs-only**. Do not design tools that mutate systems (no write operations) or expand into metrics/traces/alerts.

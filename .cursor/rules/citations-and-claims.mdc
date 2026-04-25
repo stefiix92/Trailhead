@@ -1,0 +1,42 @@
+---
+description: Enforce line-ID citations for all externally stated findings
+globs: *
+alwaysApply: true
+---
+
+## Citation rule (hard)
+
+Any statement to a human that asserts a fact about logs **must cite one or more log line IDs** (e.g. `log:4021`) that support it.
+
+Examples of facts that require citations:
+
+- “Errors started right after deploy.”
+- “DB pool saturated around 14:02.”
+- “The top cluster is `FileNotFoundError`.”
+- “94% of errors are covered by 3 clusters.”
+
+## How to cite
+
+- Prefer citing the **minimal set** of line IDs that support the claim.
+- When referencing a cluster-level conclusion, cite:
+  - the aggregate result fields (counts/coverage) **and**
+  - 2–5 representative line IDs from the cluster samples.
+
+## If you can’t cite, say so explicitly
+
+If you cannot cite the claim, do **not** present it as fact. Use one of:
+
+- “I **can’t confirm from the available lines**; I don’t have a cited log line showing X.”
+- “Hypothesis (uncited): …”
+- “No evidence in the sampled clusters for X; would need to query for …”
+
+## Avoid citation laundering
+
+- Don’t cite line IDs that **don’t actually contain** the described evidence.
+- Don’t convert an aggregate count into a narrative without citing representative lines.
+- Don’t treat tool descriptions or assumptions as evidence.
+
+## Keep citations stable in conversation
+
+- Line IDs are **session-scoped**; preserve them verbatim.
+- When asked “show me,” use `get_lines_by_id` (or equivalent) to retrieve the full line(s) for the cited IDs.
