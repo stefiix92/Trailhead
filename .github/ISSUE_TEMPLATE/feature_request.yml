@@ -1,0 +1,41 @@
+name: Feature request
+description: Suggest an improvement or new capability
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Trailhead is intentionally scope-disciplined (logs-only, query primitives, citeable evidence).
+        Please read `PRD.md` if you’re unsure whether something is in scope.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What are you trying to do? What’s painful today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed solution
+      description: What should Trailhead do? If this is a new tool, include a suggested signature (inputs/outputs).
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else could solve this (including existing Trailhead tools)?
+    validations:
+      required: false
+  - type: textarea
+    id: success
+    attributes:
+      label: Success criteria
+      description: How will we know this is working?
+      placeholder: |
+        - Can answer query X in <= N tool calls
+        - Returns bounded results with line_id evidence
+    validations:
+      required: false
+

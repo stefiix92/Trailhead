@@ -2,6 +2,15 @@
 
 Self-hosted MCP server so AI agents can query production logs with **structured, citeable** results (line IDs), not raw dumps. See [PRD.md](PRD.md) for product scope.
 
+> Open source. Self-hosted. Logs never leave your infra.
+
+<!--
+Badges: replace OWNER/REPO once this is published on GitHub.
+- CI: https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg
+- Release: https://img.shields.io/github/v/release/OWNER/REPO
+- License: https://img.shields.io/github/license/OWNER/REPO
+-->
+
 ## Try in about 60 seconds
 
 1. **Build** (static binary, no cgo):
@@ -107,6 +116,17 @@ CGO_ENABLED=0 go test ./...
 On some macOS setups, tests crash unless `CGO_ENABLED=0` (static test binary).
 
 Internal `test_coverage` is **off** unless `TRAILHEAD_DEV_TOOLS=1`.
+
+## Contributing
+
+Issues and PRs welcome — especially new backends and sharper “incident triage” primitives.
+
+- See [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- Security issues: see [`SECURITY.md`](SECURITY.md)
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).
 
 ## Adoption checklist (dogfood before a public push)
 

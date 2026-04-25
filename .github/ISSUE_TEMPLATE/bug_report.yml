@@ -1,0 +1,71 @@
+name: Bug report
+description: Report a problem with Trailhead
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please keep logs/config **redacted** (secrets/PII).
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Backend
+      description: Which backend were you using?
+      options:
+        - loki
+        - docker
+        - journald
+        - file
+        - other / not sure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: Tag (e.g. v0.1.0) or git SHA
+      placeholder: v0.1.0 or abc1234
+    validations:
+      required: false
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what actually happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal, copy/paste-able steps.
+      placeholder: |
+        1. Configure env vars ...
+        2. Call tool X with payload ...
+        3. Observe output ...
+    validations:
+      required: true
+  - type: textarea
+    id: tool_payload
+    attributes:
+      label: Tool call payload(s)
+      description: JSON payload(s) you sent to the tool(s). Redact secrets.
+      render: json
+    validations:
+      required: false
+  - type: textarea
+    id: tool_output
+    attributes:
+      label: Tool output(s)
+      description: JSON output(s). Redact secrets/PII.
+      render: json
+    validations:
+      required: false
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Screenshots, environment details, or relevant context.
+    validations:
+      required: false
+

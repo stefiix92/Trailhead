@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions / discussion
+    url: https://github.com/OWNER/REPO/discussions
+    about: Use GitHub Discussions for open-ended questions, design brainstorming, and “is this in scope?” threads.
+
