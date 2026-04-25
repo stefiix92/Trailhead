@@ -56,14 +56,14 @@ Image includes `trailhead-mcp` and `trailhead` CLI under `/trailhead-mcp` and `/
 
 | Tool | Role |
 |------|------|
-| `search` | Bounded search (`file` or `loki`) |
+| `search` | Bounded search (`file`, `loki`, `docker`, `journald`) |
 | `summarize_errors` | TF–IDF clustering + coverage + representative line_ids |
 | `sample_cluster` | More samples from a cluster after summarize |
 | `diff_error_rate` | Compare error counts in two windows (**Loki only**) |
 | `correlated_events` | Events around a timestamp + optional markers file |
 | `get_lines_by_id` | Resolve cited line_ids in-session |
 
-Line IDs are **session-scoped** and **source-prefixed** (`file:…`, `loki:…`). The `trailhead show` CLI explains that resolution is via `get_lines_by_id` on the live server.
+Line IDs are **session-scoped** and **source-prefixed** (`file:…`, `loki:…`, `docker:…`, `journald:…`). The `trailhead show` CLI explains that resolution is via `get_lines_by_id` on the live server.
 
 ## Canonical demo (product script)
 

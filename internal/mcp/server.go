@@ -86,19 +86,27 @@ func searchToolDef() map[string]any {
 	return map[string]any{
 		"name": "search",
 		"description": "Search logs with bounded, citeable results. Returns structured matches with stable session-scoped line IDs " +
-			"(source-prefixed: file:N, loki:N). When reporting findings, cite line_id values from matches. " +
+			"(source-prefixed: file:N, loki:N, docker:N, journald:N). When reporting findings, cite line_id values from matches. " +
 			"If a claim is not supported by a returned line_id, state that explicitly. " +
-			"For Loki, set source=loki and lokiService or lokiLogql, with since/start/end to bound time.",
+			"For Loki, set source=loki and lokiService or lokiLogql, with since/start/end to bound time. " +
+			"For Docker, set source=docker and dockerContainer or dockerComposeService (optional time bounds apply if timestamps exist). " +
+			"For journald, set source=journald and optionally journaldUnit or journaldIdentifier.",
 		"inputSchema": map[string]any{
 			"type": "object",
 			"properties": map[string]any{
 				"query":  map[string]any{"type": "string", "description": "Substring filter (file) or additional |= filter (loki) when lokiLogql is not set."},
 				"limit":  map[string]any{"type": "integer", "minimum": 1, "maximum": 200, "default": 20},
-				"source": map[string]any{"type": "string", "enum": []string{"file", "loki"}, "default": "file"},
+				"source": map[string]any{"type": "string", "enum": []string{"file", "loki", "docker", "journald"}, "default": "file"},
 				"filePath": map[string]any{
 					"type":        "string",
 					"description": "For source=file, path to a log file.",
 				},
+				"dockerContainer":      map[string]any{"type": "string", "description": "For source=docker, container name or id for `docker logs`."},
+				"dockerComposeService": map[string]any{"type": "string", "description": "For source=docker, docker compose service name (resolved via `docker compose ps -q`)."},
+				"dockerComposeProject": map[string]any{"type": "string", "description": "Optional: docker compose project name (passed as --project-name)."},
+				"dockerComposeFilePath": map[string]any{"type": "string", "description": "Optional: compose file path (passed as -f)."},
+				"journaldUnit":        map[string]any{"type": "string", "description": "For source=journald, systemd unit (e.g. nginx.service)."},
+				"journaldIdentifier":  map[string]any{"type": "string", "description": "For source=journald, SYSLOG_IDENTIFIER match (journalctl field filter)."},
 				"lokiLogql": map[string]any{
 					"type":        "string",
 					"description": "For source=loki, full LogQL. If empty, built from lokiService/lokiStreamSelector and query.",
@@ -109,7 +117,7 @@ func searchToolDef() map[string]any {
 				"start":              map[string]any{"type": "string", "description": "RFC3339 start (optional)."},
 				"end":                map[string]any{"type": "string", "description": "RFC3339 end (optional, default now)."},
 				"until":              map[string]any{"type": "string", "description": "RFC3339 synonym for end."},
-				"filterErrors":       map[string]any{"type": "boolean", "description": "For file, only return lines that look like errors."},
+				"filterErrors":       map[string]any{"type": "boolean", "description": "For file/docker/journald sources, only return lines that look like errors."},
 			},
 		},
 	}
@@ -123,8 +131,14 @@ func summarizeErrorsToolDef() map[string]any {
 		"inputSchema": map[string]any{
 			"type": "object",
 			"properties": map[string]any{
-				"source":             map[string]any{"type": "string", "enum": []string{"file", "loki"}, "default": "file"},
+				"source":             map[string]any{"type": "string", "enum": []string{"file", "loki", "docker", "journald"}, "default": "file"},
 				"filePath":           map[string]any{"type": "string"},
+				"dockerContainer":      map[string]any{"type": "string"},
+				"dockerComposeService": map[string]any{"type": "string"},
+				"dockerComposeProject": map[string]any{"type": "string"},
+				"dockerComposeFilePath": map[string]any{"type": "string"},
+				"journaldUnit":         map[string]any{"type": "string"},
+				"journaldIdentifier":   map[string]any{"type": "string"},
 				"lokiService":        map[string]any{"type": "string"},
 				"lokiStreamSelector": map[string]any{"type": "string"},
 				"lokiLogql":          map[string]any{"type": "string", "description": "Full error-scoped LogQL; overrides heuristics if set."},
@@ -163,8 +177,14 @@ func correlatedEventsToolDef() map[string]any {
 			"properties": map[string]any{
 				"around":             map[string]any{"type": "string", "description": "Center time RFC3339."},
 				"window":             map[string]any{"type": "string", "description": "Total span (go duration e.g. 2m, 1h), default 2m."},
-				"source":             map[string]any{"type": "string", "enum": []string{"file", "loki"}},
+				"source":             map[string]any{"type": "string", "enum": []string{"file", "loki", "docker", "journald"}},
 				"filePath":           map[string]any{"type": "string"},
+				"dockerContainer":      map[string]any{"type": "string"},
+				"dockerComposeService": map[string]any{"type": "string"},
+				"dockerComposeProject": map[string]any{"type": "string"},
+				"dockerComposeFilePath": map[string]any{"type": "string"},
+				"journaldUnit":         map[string]any{"type": "string"},
+				"journaldIdentifier":   map[string]any{"type": "string"},
 				"lokiService":        map[string]any{"type": "string"},
 				"lokiStreamSelector": map[string]any{"type": "string"},
 				"limit":              map[string]any{"type": "integer", "default": 100},

@@ -57,6 +57,8 @@ func newAllocators() map[string]*lineid.Allocator {
 	return map[string]*lineid.Allocator{
 		"file": lineid.NewAllocator("file"),
 		"loki": lineid.NewAllocator("loki"),
+		"docker": lineid.NewAllocator("docker"),
+		"journald": lineid.NewAllocator("journald"),
 	}
 }
 
@@ -108,6 +110,14 @@ type SearchArgs struct {
 	Limit    int    `json:"limit"`
 	Source   string `json:"source"`
 	FilePath string `json:"filePath"`
+	// Docker (requires local docker CLI)
+	DockerContainer       string `json:"dockerContainer"`
+	DockerComposeService  string `json:"dockerComposeService"`
+	DockerComposeProject  string `json:"dockerComposeProject"`
+	DockerComposeFilePath string `json:"dockerComposeFilePath"`
+	// Journald (requires journalctl)
+	JournaldUnit       string `json:"journaldUnit"`
+	JournaldIdentifier string `json:"journaldIdentifier"`
 	// Loki (requires TRAILHEAD_LOKI_URL in server env)
 	LokiLogQL          string `json:"lokiLogql"`
 	LokiService        string `json:"lokiService"`
@@ -220,6 +230,54 @@ func (s *Session) queryBackend(ctx context.Context, source string, args SearchAr
 			return nil, bq, err
 		}
 		return lines, bq, nil
+	case "docker":
+		bq["dockerContainer"] = args.DockerContainer
+		bq["dockerComposeService"] = args.DockerComposeService
+		if args.DockerComposeProject != "" {
+			bq["dockerComposeProject"] = args.DockerComposeProject
+		}
+		if args.DockerComposeFilePath != "" {
+			bq["dockerComposeFilePath"] = args.DockerComposeFilePath
+		}
+		db := &backends.DockerBackend{
+			Container:       args.DockerContainer,
+			ComposeService:  args.DockerComposeService,
+			ComposeProject:  args.DockerComposeProject,
+			ComposeFilePath: args.DockerComposeFilePath,
+		}
+		lines, err := db.Search(ctx, backends.SearchQuery{
+			Query:        args.Query,
+			Limit:        limit,
+			Start:        start,
+			End:          end,
+			FilterErrors: forErrors || args.FilterErrors,
+		})
+		if err != nil {
+			return nil, bq, err
+		}
+		return lines, bq, nil
+	case "journald":
+		if args.JournaldUnit != "" {
+			bq["journaldUnit"] = args.JournaldUnit
+		}
+		if args.JournaldIdentifier != "" {
+			bq["journaldIdentifier"] = args.JournaldIdentifier
+		}
+		jb := &backends.JournaldBackend{
+			Unit:       args.JournaldUnit,
+			Identifier: args.JournaldIdentifier,
+		}
+		lines, err := jb.Search(ctx, backends.SearchQuery{
+			Query:        args.Query,
+			Limit:        limit,
+			Start:        start,
+			End:          end,
+			FilterErrors: forErrors || args.FilterErrors,
+		})
+		if err != nil {
+			return nil, bq, err
+		}
+		return lines, bq, nil
 	case "loki":
 		if s.cfg == nil || !s.cfg.LokiConfigured() {
 			return nil, bq, fmt.Errorf("loki: server is not configured (set TRAILHEAD_LOKI_URL)")
@@ -307,6 +365,12 @@ func (s *Session) GetLinesByID(_ context.Context, ids []string) (GetLinesByIDRes
 type SummarizeErrorsArgs struct {
 	Source             string `json:"source"`
 	FilePath           string `json:"filePath"`
+	DockerContainer       string `json:"dockerContainer"`
+	DockerComposeService  string `json:"dockerComposeService"`
+	DockerComposeProject  string `json:"dockerComposeProject"`
+	DockerComposeFilePath string `json:"dockerComposeFilePath"`
+	JournaldUnit          string `json:"journaldUnit"`
+	JournaldIdentifier    string `json:"journaldIdentifier"`
 	LokiService        string `json:"lokiService"`
 	LokiStreamSelector string `json:"lokiStreamSelector"`
 	LokiLogQL          string `json:"lokiLogql"`
@@ -350,6 +414,12 @@ func (s *Session) SummarizeErrors(ctx context.Context, args SummarizeErrorsArgs)
 	sa := SearchArgs{
 		Source:             src,
 		FilePath:           args.FilePath,
+		DockerContainer:    args.DockerContainer,
+		DockerComposeService:  args.DockerComposeService,
+		DockerComposeProject:  args.DockerComposeProject,
+		DockerComposeFilePath: args.DockerComposeFilePath,
+		JournaldUnit:       args.JournaldUnit,
+		JournaldIdentifier: args.JournaldIdentifier,
 		LokiService:        args.LokiService,
 		LokiStreamSelector: args.LokiStreamSelector,
 		LokiLogQL:          args.LokiLogQL,
@@ -616,6 +686,12 @@ type CorrelatedEventsArgs struct {
 	Window             string `json:"window"`
 	Source             string `json:"source"`
 	FilePath           string `json:"filePath"`
+	DockerContainer       string `json:"dockerContainer"`
+	DockerComposeService  string `json:"dockerComposeService"`
+	DockerComposeProject  string `json:"dockerComposeProject"`
+	DockerComposeFilePath string `json:"dockerComposeFilePath"`
+	JournaldUnit          string `json:"journaldUnit"`
+	JournaldIdentifier    string `json:"journaldIdentifier"`
 	LokiService        string `json:"lokiService"`
 	LokiStreamSelector string `json:"lokiStreamSelector"`
 	Limit              int    `json:"limit"`
@@ -676,6 +752,12 @@ func (s *Session) CorrelatedEvents(ctx context.Context, args CorrelatedEventsArg
 	sa := SearchArgs{
 		Source:             src,
 		FilePath:           args.FilePath,
+		DockerContainer:    args.DockerContainer,
+		DockerComposeService:  args.DockerComposeService,
+		DockerComposeProject:  args.DockerComposeProject,
+		DockerComposeFilePath: args.DockerComposeFilePath,
+		JournaldUnit:       args.JournaldUnit,
+		JournaldIdentifier: args.JournaldIdentifier,
 		LokiService:        args.LokiService,
 		LokiStreamSelector: args.LokiStreamSelector,
 		Limit:              limit,

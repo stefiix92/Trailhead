@@ -4,7 +4,10 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"github.com/michalstefanec/trailhead/internal/backends"
 )
 
 func TestSession_GetLinesByID_returnsStoredSearchLines(t *testing.T) {
@@ -98,5 +101,24 @@ func TestSession_SummarizeErrors_clusters(t *testing.T) {
 	}
 	if sr.Count < 1 {
 		t.Fatalf("expected samples")
+	}
+}
+
+func TestSession_registerLines_prefixesBySource(t *testing.T) {
+	s := NewSession()
+	ms := s.registerLines("docker", []backends.Line{{Message: "hello"}})
+	if len(ms) != 1 {
+		t.Fatalf("expected 1, got %d", len(ms))
+	}
+	if !strings.HasPrefix(ms[0].LineID, "docker:") {
+		t.Fatalf("expected docker: prefix, got %q", ms[0].LineID)
+	}
+
+	ms2 := s.registerLines("journald", []backends.Line{{Message: "hello2"}})
+	if len(ms2) != 1 {
+		t.Fatalf("expected 1, got %d", len(ms2))
+	}
+	if !strings.HasPrefix(ms2[0].LineID, "journald:") {
+		t.Fatalf("expected journald: prefix, got %q", ms2[0].LineID)
 	}
 }
