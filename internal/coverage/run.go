@@ -16,8 +16,8 @@ type ToolArgs struct {
 }
 
 type ToolResult struct {
-	Query   map[string]any       `json:"query"`
-	Summary CoverProfileSummary  `json:"summary"`
+	Query   map[string]any      `json:"query"`
+	Summary CoverProfileSummary `json:"summary"`
 }
 
 func Run(ctx context.Context, args ToolArgs) (ToolResult, error) {
@@ -62,4 +62,3 @@ func Run(ctx context.Context, args ToolArgs) (ToolResult, error) {
 		Summary: summary,
 	}, nil
 }
-

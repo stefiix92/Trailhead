@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+
+	"github.com/michalstefanec/trailhead/internal/config"
 )
 
 // NOTE: This is a minimal stdio JSON-RPC-ish shim to get a working skeleton in place
@@ -14,7 +16,7 @@ import (
 // Supported:
 // - initialize
 // - tools/list
-// - tools/call (search only)
+// - tools/call (all core log tools; optional test_coverage with TRAILHEAD_DEV_TOOLS=1)
 //
 // Everything else returns method-not-found.
 
@@ -26,10 +28,10 @@ type rpcRequest struct {
 }
 
 type rpcResponse struct {
-	JSONRPC string      `json:"jsonrpc"`
-	ID      any         `json:"id,omitempty"`
-	Result  any         `json:"result,omitempty"`
-	Error   *rpcError   `json:"error,omitempty"`
+	JSONRPC string    `json:"jsonrpc"`
+	ID      any       `json:"id,omitempty"`
+	Result  any       `json:"result,omitempty"`
+	Error   *rpcError `json:"error,omitempty"`
 }
 
 type rpcError struct {
@@ -37,11 +39,11 @@ type rpcError struct {
 	Message string `json:"message"`
 }
 
-func Run(ctx context.Context, in io.Reader, out io.Writer) error {
+func Run(ctx context.Context, cfg *config.Config, in io.Reader, out io.Writer) error {
 	dec := json.NewDecoder(in)
 	enc := json.NewEncoder(out)
 
-	s := newServer()
+	s := newServer(cfg)
 
 	for {
 		select {
@@ -64,4 +66,3 @@ func Run(ctx context.Context, in io.Reader, out io.Writer) error {
 		}
 	}
 }
-

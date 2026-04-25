@@ -8,9 +8,9 @@
 *.out
 coverage.*
 
-# Binaries (common)
-trailhead
-trailhead-mcp
+# Binaries at repo root only (do not ignore cmd/trailhead paths)
+/trailhead
+/trailhead-mcp
 
 # Logs / local data
 *.log

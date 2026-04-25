@@ -51,4 +51,3 @@ func TestParseCoverProfile_rejectsMissingMode(t *testing.T) {
 		t.Fatalf("expected error")
 	}
 }
-

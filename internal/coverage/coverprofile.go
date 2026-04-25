@@ -16,24 +16,25 @@ type ParseOptions struct {
 }
 
 type FileCoverage struct {
-	Path             string  `json:"path"`
-	TotalStatements  int64   `json:"total_statements"`
-	CoveredStatements int64  `json:"covered_statements"`
-	Percent          float64 `json:"percent"`
+	Path              string  `json:"path"`
+	TotalStatements   int64   `json:"total_statements"`
+	CoveredStatements int64   `json:"covered_statements"`
+	Percent           float64 `json:"percent"`
 }
 
 type CoverProfileSummary struct {
-	Mode              string        `json:"mode"`
-	TotalStatements   int64         `json:"total_statements"`
-	CoveredStatements int64         `json:"covered_statements"`
-	TotalPercent      float64       `json:"total_percent"`
+	Mode              string         `json:"mode"`
+	TotalStatements   int64          `json:"total_statements"`
+	CoveredStatements int64          `json:"covered_statements"`
+	TotalPercent      float64        `json:"total_percent"`
 	TopFiles          []FileCoverage `json:"top_files,omitempty"`
 }
 
 var ErrInvalidCoverProfile = errors.New("invalid coverprofile")
 
 // ParseCoverProfile parses Go's coverprofile format produced by:
-//   go test -coverprofile=...
+//
+//	go test -coverprofile=...
 //
 // It returns a bounded summary suitable for structured tool output.
 func ParseCoverProfile(profile []byte, opts ParseOptions) (CoverProfileSummary, error) {
@@ -150,4 +151,3 @@ func percent(covered, total int64) float64 {
 	// Keep one decimal of stability? For now, match tests expecting exact .0.
 	return (float64(covered) / float64(total)) * 100.0
 }
-

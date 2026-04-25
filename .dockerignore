@@ -1,0 +1,9 @@
+.git
+.github
+**/.DS_Store
+**/*_test.go
+.cursor
+**/*.md
+!README.md
+agent-transcripts
+terminals

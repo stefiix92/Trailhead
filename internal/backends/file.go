@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -42,7 +43,11 @@ func (b *FileBackend) Search(ctx context.Context, q SearchQuery) ([]Line, error)
 		}
 
 		msg := sc.Text()
-		if needle == "" || strings.Contains(strings.ToLower(msg), needle) {
+		low := strings.ToLower(msg)
+		if q.FilterErrors && !looksErrorLine(low) {
+			continue
+		}
+		if needle == "" || strings.Contains(low, needle) {
 			out = append(out, Line{Message: msg})
 			if len(out) >= limit {
 				break
@@ -55,3 +60,8 @@ func (b *FileBackend) Search(ctx context.Context, q SearchQuery) ([]Line, error)
 	return out, nil
 }
 
+var reErrorWord = regexp.MustCompile(`(?i)\b(error|exception|panic|fatal|err)\b`)
+
+func looksErrorLine(low string) bool {
+	return reErrorWord.MatchString(low) || strings.Contains(low, "error") || strings.Contains(low, "exception")
+}

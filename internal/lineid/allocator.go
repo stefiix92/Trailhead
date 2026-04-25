@@ -21,4 +21,3 @@ func (a *Allocator) Next() string {
 	n := atomic.AddUint64(&a.seq, 1)
 	return fmt.Sprintf("%s:%d", a.prefix, n)
 }
-
