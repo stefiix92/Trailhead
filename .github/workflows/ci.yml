@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build_test_coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test (with coverage)
+        run: |
+          go test ./... -coverprofile=cover.out
+          echo ""
+          echo "Coverage summary:"
+          go tool cover -func=cover.out | tail -n 1
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverprofile
+          path: cover.out
+          if-no-files-found: error
+
