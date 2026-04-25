@@ -63,7 +63,21 @@ Image includes `trailhead-mcp` and `trailhead` CLI under `/trailhead-mcp` and `/
 | `correlated_events` | Events around a timestamp + optional markers file |
 | `get_lines_by_id` | Resolve cited line_ids in-session |
 
-Line IDs are **session-scoped** and **source-prefixed** (`file:…`, `loki:…`, `docker:…`, `journald:…`). The `trailhead show` CLI explains that resolution is via `get_lines_by_id` on the live server.
+Line IDs are **session-scoped** and **source-prefixed** (`file:…`, `loki:…`, `docker:…`, `journald:…`).
+
+## Verify a cited line_id (CLI)
+
+In terminal/CI workflows you can resolve a previously cited `line_id` into full text:
+
+```bash
+./trailhead show loki:42 file:12
+```
+
+By default the CLI runs `./trailhead-mcp` as a subprocess and calls `get_lines_by_id` over stdio. To point it at another server binary/path:
+
+```bash
+TRAILHEAD_MCP_CMD=/absolute/path/to/trailhead-mcp ./trailhead show loki:42
+```
 
 ## Canonical demo (product script)
 

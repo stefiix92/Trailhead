@@ -17,11 +17,11 @@ func main() {
 
 	cfg, err := config.FromEnv()
 	if err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
+		_, _ = fmt.Fprintf(os.Stderr, "trailhead-mcp: config error: %v\n", err)
+		os.Exit(2)
 	}
 	if err := mcp.Run(ctx, &cfg, os.Stdin, os.Stdout); err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "trailhead-mcp: %v\n", err)
 		os.Exit(1)
 	}
 }

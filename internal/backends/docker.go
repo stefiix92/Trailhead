@@ -147,4 +147,3 @@ func splitDockerTimestamp(line string) (timestamp string, message string) {
 	}
 	return "", line
 }
-

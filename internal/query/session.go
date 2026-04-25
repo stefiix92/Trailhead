@@ -55,9 +55,9 @@ func NewSessionWithConfig(cfg *config.Config) *Session {
 
 func newAllocators() map[string]*lineid.Allocator {
 	return map[string]*lineid.Allocator{
-		"file": lineid.NewAllocator("file"),
-		"loki": lineid.NewAllocator("loki"),
-		"docker": lineid.NewAllocator("docker"),
+		"file":     lineid.NewAllocator("file"),
+		"loki":     lineid.NewAllocator("loki"),
+		"docker":   lineid.NewAllocator("docker"),
 		"journald": lineid.NewAllocator("journald"),
 	}
 }
@@ -363,22 +363,22 @@ func (s *Session) GetLinesByID(_ context.Context, ids []string) (GetLinesByIDRes
 
 // SummarizeErrorsArgs defines error summarization and clustering.
 type SummarizeErrorsArgs struct {
-	Source             string `json:"source"`
-	FilePath           string `json:"filePath"`
+	Source                string `json:"source"`
+	FilePath              string `json:"filePath"`
 	DockerContainer       string `json:"dockerContainer"`
 	DockerComposeService  string `json:"dockerComposeService"`
 	DockerComposeProject  string `json:"dockerComposeProject"`
 	DockerComposeFilePath string `json:"dockerComposeFilePath"`
 	JournaldUnit          string `json:"journaldUnit"`
 	JournaldIdentifier    string `json:"journaldIdentifier"`
-	LokiService        string `json:"lokiService"`
-	LokiStreamSelector string `json:"lokiStreamSelector"`
-	LokiLogQL          string `json:"lokiLogql"`
-	Since              string `json:"since"`
-	Start              string `json:"start"`
-	End                string `json:"end"`
-	Until              string `json:"until"`
-	MaxLines           int    `json:"maxLines"`
+	LokiService           string `json:"lokiService"`
+	LokiStreamSelector    string `json:"lokiStreamSelector"`
+	LokiLogQL             string `json:"lokiLogql"`
+	Since                 string `json:"since"`
+	Start                 string `json:"start"`
+	End                   string `json:"end"`
+	Until                 string `json:"until"`
+	MaxLines              int    `json:"maxLines"`
 }
 
 // SummarizeErrorsResult is structured aggregate + evidence for clusters.
@@ -412,23 +412,23 @@ func (s *Session) SummarizeErrors(ctx context.Context, args SummarizeErrorsArgs)
 		maxL = 2000
 	}
 	sa := SearchArgs{
-		Source:             src,
-		FilePath:           args.FilePath,
-		DockerContainer:    args.DockerContainer,
+		Source:                src,
+		FilePath:              args.FilePath,
+		DockerContainer:       args.DockerContainer,
 		DockerComposeService:  args.DockerComposeService,
 		DockerComposeProject:  args.DockerComposeProject,
 		DockerComposeFilePath: args.DockerComposeFilePath,
-		JournaldUnit:       args.JournaldUnit,
-		JournaldIdentifier: args.JournaldIdentifier,
-		LokiService:        args.LokiService,
-		LokiStreamSelector: args.LokiStreamSelector,
-		LokiLogQL:          args.LokiLogQL,
-		Since:              args.Since,
-		Start:              args.Start,
-		End:                args.End,
-		Until:              args.Until,
-		Query:              "",
-		Limit:              maxL,
+		JournaldUnit:          args.JournaldUnit,
+		JournaldIdentifier:    args.JournaldIdentifier,
+		LokiService:           args.LokiService,
+		LokiStreamSelector:    args.LokiStreamSelector,
+		LokiLogQL:             args.LokiLogQL,
+		Since:                 args.Since,
+		Start:                 args.Start,
+		End:                   args.End,
+		Until:                 args.Until,
+		Query:                 "",
+		Limit:                 maxL,
 	}
 	lines, bq, err := s.queryBackend(ctx, src, sa, true)
 	if err != nil {
@@ -682,19 +682,19 @@ func (s *Session) countErrors(ctx context.Context, source string, args DiffError
 
 // CorrelatedEventsArgs fetches a bounded window around a timestamp, plus optional deploy markers.
 type CorrelatedEventsArgs struct {
-	Around             string `json:"around"`
-	Window             string `json:"window"`
-	Source             string `json:"source"`
-	FilePath           string `json:"filePath"`
+	Around                string `json:"around"`
+	Window                string `json:"window"`
+	Source                string `json:"source"`
+	FilePath              string `json:"filePath"`
 	DockerContainer       string `json:"dockerContainer"`
 	DockerComposeService  string `json:"dockerComposeService"`
 	DockerComposeProject  string `json:"dockerComposeProject"`
 	DockerComposeFilePath string `json:"dockerComposeFilePath"`
 	JournaldUnit          string `json:"journaldUnit"`
 	JournaldIdentifier    string `json:"journaldIdentifier"`
-	LokiService        string `json:"lokiService"`
-	LokiStreamSelector string `json:"lokiStreamSelector"`
-	Limit              int    `json:"limit"`
+	LokiService           string `json:"lokiService"`
+	LokiStreamSelector    string `json:"lokiStreamSelector"`
+	Limit                 int    `json:"limit"`
 }
 
 // CorrelatedEventsResult is nearby lines plus markers.
@@ -750,21 +750,21 @@ func (s *Session) CorrelatedEvents(ctx context.Context, args CorrelatedEventsArg
 		limit = 100
 	}
 	sa := SearchArgs{
-		Source:             src,
-		FilePath:           args.FilePath,
-		DockerContainer:    args.DockerContainer,
+		Source:                src,
+		FilePath:              args.FilePath,
+		DockerContainer:       args.DockerContainer,
 		DockerComposeService:  args.DockerComposeService,
 		DockerComposeProject:  args.DockerComposeProject,
 		DockerComposeFilePath: args.DockerComposeFilePath,
-		JournaldUnit:       args.JournaldUnit,
-		JournaldIdentifier: args.JournaldIdentifier,
-		LokiService:        args.LokiService,
-		LokiStreamSelector: args.LokiStreamSelector,
-		Limit:              limit,
-		Since:              "",
-		Start:              start.Format(time.RFC3339),
-		End:                end.Format(time.RFC3339),
-		Query:              "",
+		JournaldUnit:          args.JournaldUnit,
+		JournaldIdentifier:    args.JournaldIdentifier,
+		LokiService:           args.LokiService,
+		LokiStreamSelector:    args.LokiStreamSelector,
+		Limit:                 limit,
+		Since:                 "",
+		Start:                 start.Format(time.RFC3339),
+		End:                   end.Format(time.RFC3339),
+		Query:                 "",
 	}
 	lines, bq, err := s.queryBackend(ctx, src, sa, false)
 	if err != nil {

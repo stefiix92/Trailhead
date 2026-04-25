@@ -15,4 +15,3 @@ func truncateForError(b []byte, n int) string {
 	}
 	return s
 }
-

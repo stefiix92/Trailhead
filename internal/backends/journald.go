@@ -139,4 +139,3 @@ func looksLikeJournalIdentifier(s string) bool {
 	}
 	return true
 }
-
