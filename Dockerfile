@@ -1,7 +1,8 @@
 # Build static binaries (no cgo) for a small runtime image.
 FROM golang:1.21-bookworm AS build
 WORKDIR /src
-COPY go.mod go.sum /src/
+COPY go.mod /src/
+RUN go mod download
 COPY . /src
 ARG VERSION=0.1.0
 RUN CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X github.com/stefiix92/Trailhead/internal/version.Version=${VERSION}" \
