@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/michalstefanec/trailhead/internal/config"
-	"github.com/michalstefanec/trailhead/internal/coverage"
-	"github.com/michalstefanec/trailhead/internal/query"
-	"github.com/michalstefanec/trailhead/internal/version"
+	"github.com/stefiix92/Trailhead/internal/config"
+	"github.com/stefiix92/Trailhead/internal/coverage"
+	"github.com/stefiix92/Trailhead/internal/query"
+	"github.com/stefiix92/Trailhead/internal/version"
 )
 
 type server struct {

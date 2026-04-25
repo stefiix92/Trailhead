@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/michalstefanec/trailhead/internal/backends"
+	"github.com/stefiix92/Trailhead/internal/backends"
 )
 
 func TestSession_GetLinesByID_returnsStoredSearchLines(t *testing.T) {

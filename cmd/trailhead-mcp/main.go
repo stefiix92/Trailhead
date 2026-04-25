@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/michalstefanec/trailhead/internal/config"
-	"github.com/michalstefanec/trailhead/internal/mcp"
+	"github.com/stefiix92/Trailhead/internal/config"
+	"github.com/stefiix92/Trailhead/internal/mcp"
 )
 
 func main() {

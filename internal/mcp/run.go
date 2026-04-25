@@ -6,7 +6,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/michalstefanec/trailhead/internal/config"
+	"github.com/stefiix92/Trailhead/internal/config"
 )
 
 // NOTE: This is a minimal stdio JSON-RPC-ish shim to get a working skeleton in place

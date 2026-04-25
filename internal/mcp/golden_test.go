@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/michalstefanec/trailhead/internal/config"
+	"github.com/stefiix92/Trailhead/internal/config"
 )
 
 func TestToolsList_Golden_default(t *testing.T) {

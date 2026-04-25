@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/michalstefanec/trailhead/internal/backends"
-	"github.com/michalstefanec/trailhead/internal/cluster"
-	"github.com/michalstefanec/trailhead/internal/config"
-	"github.com/michalstefanec/trailhead/internal/lineid"
+	"github.com/stefiix92/Trailhead/internal/backends"
+	"github.com/stefiix92/Trailhead/internal/cluster"
+	"github.com/stefiix92/Trailhead/internal/config"
+	"github.com/stefiix92/Trailhead/internal/lineid"
 )
 
 // Session holds per-MCP connection state: line store, line IDs, and last cluster mapping.
