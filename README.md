@@ -4,14 +4,62 @@ Self-hosted MCP server so AI agents can query production logs with **structured,
 
 > Open source. Self-hosted. Logs never leave your infra.
 
-<!--
-Badges: replace OWNER/REPO once this is published on GitHub.
-- CI: https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg
-- Release: https://img.shields.io/github/v/release/OWNER/REPO
-- License: https://img.shields.io/github/license/OWNER/REPO
--->
+![CI](https://github.com/stefiix92/Trailhead/actions/workflows/ci.yml/badge.svg)
+![Release](https://img.shields.io/github/v/release/stefiix92/Trailhead)
+![License](https://img.shields.io/github/license/stefiix92/Trailhead)
 
-## Try in about 60 seconds
+## What this looks like in practice (30s)
+
+- **Watch**: asciinema recording at [`docs/demo/upload-500.cast`](docs/demo/upload-500.cast) (play locally with `asciinema play docs/demo/upload-500.cast`).
+- **Flow**: `summarize_errors` → pick a cluster → cite `line_id`s → `get_lines_by_id` to show the exact lines behind the claim.
+
+## Install
+
+### Prebuilt binaries (recommended)
+
+Download from the GitHub Releases page and verify checksums:
+
+```bash
+# Example for macOS arm64; see Releases for all assets.
+curl -L -o trailhead.tar.gz \
+  https://github.com/stefiix92/Trailhead/releases/latest/download/trailhead_v0.1.0_darwin_arm64.tar.gz
+
+curl -L -o checksums.txt \
+  https://github.com/stefiix92/Trailhead/releases/latest/download/checksums.txt
+
+shasum -a 256 -c checksums.txt | grep trailhead_v0.1.0_darwin_arm64.tar.gz
+
+tar -xzf trailhead.tar.gz
+sudo mv trailhead_v0.1.0_darwin_arm64/trailhead-mcp /usr/local/bin/trailhead-mcp
+sudo mv trailhead_v0.1.0_darwin_arm64/trailhead /usr/local/bin/trailhead
+```
+
+### Docker (GHCR)
+
+```bash
+docker pull ghcr.io/stefiix92/trailhead:v0.1.0
+```
+
+The image includes `trailhead-mcp` and `trailhead` under `/trailhead-mcp` and `/trailhead`. The default entrypoint is stdio MCP (`/trailhead-mcp`).
+
+## Configure in Cursor (MCP)
+
+Add a stdio server (paths absolute on your machine):
+
+```json
+{
+  "mcpServers": {
+    "trailhead": {
+      "command": "/absolute/path/to/trailhead-mcp",
+      "env": {
+        "TRAILHEAD_LOKI_URL": "https://loki.example.com"
+      }
+    }
+  }
+}
+```
+
+## Try in about 60 seconds (from source)
 
 1. **Build** (static binary, no cgo):
 
@@ -31,35 +79,11 @@ Badges: replace OWNER/REPO once this is published on GitHub.
    | `TRAILHEAD_MAX_SESSION_LINES` | Cap stored line records (default `100000`) |
    | `TRAILHEAD_DEV_TOOLS=1` | Expose non-log `test_coverage` (Go projects only) |
 
-3. **Cursor MCP** — Add a stdio server (paths absolute on your machine):
-
-   ```json
-   {
-     "mcpServers": {
-       "trailhead": {
-         "command": "/absolute/path/to/trailhead-mcp",
-         "env": {
-           "TRAILHEAD_LOKI_URL": "https://loki.example.com"
-         }
-       }
-     }
-   }
-   ```
-
-4. **Smoke test** (stdio JSON-RPC):
+3. **Smoke test** (stdio JSON-RPC):
 
    ```bash
    echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | ./trailhead-mcp
    ```
-
-## Docker
-
-```bash
-docker build -t trailhead-mcp:0.1.0 --build-arg VERSION=0.1.0 .
-# Mount config / pass env at run time; stdio is the default entrypoint.
-```
-
-Image includes `trailhead-mcp` and `trailhead` CLI under `/trailhead-mcp` and `/trailhead`.
 
 ## Tools (v0.1)
 
@@ -128,8 +152,9 @@ Issues and PRs welcome — especially new backends and sharper “incident triag
 
 MIT. See [`LICENSE`](LICENSE).
 
-## Adoption checklist (dogfood before a public push)
+## Dogfooding status (be honest before promoting)
 
+- This is intentionally a checklist, not marketing copy. If you haven’t done these yet, it’s better to say so than to imply production readiness.
 - [ ] Run against real Loki or `file` logs for at least two weeks of local use.
-- [ ] Confirm the upload-500 style flow end-to-end with cited line IDs.
+- [ ] Confirm the “upload-500” flow end-to-end with cited `line_id`s (and keep the demo recording up to date).
 - [ ] Publish a short write-up (blog or README story) using the scenario in [PRD.md](PRD.md).

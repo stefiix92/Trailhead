@@ -1,0 +1,9 @@
+printf '\nTrailhead demo (placeholder script)\n\n'
+printf 'This file is used only to drive a deterministic asciinema recording.\n'
+printf 'Replace the commands below with your real Cursor/MCP interaction notes.\n\n'
+
+printf '1) In Cursor agent chat, run: summarize_errors (source=loki, since=30m)\n'
+printf '2) Pick top cluster_id, cite line_ids in your reasoning\n'
+printf '3) Run: get_lines_by_id for 1-2 cited IDs\n\n'
+
+printf 'Tip: record the Cursor window separately if you want a visual embed.\n\n'

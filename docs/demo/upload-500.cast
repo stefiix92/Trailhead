@@ -1,0 +1,10 @@
+{"version": 2, "width": 100, "height": 28, "timestamp": 1714032000, "env": {"SHELL": "/bin/bash", "TERM": "xterm-256color"}}
+[0.20, "o", "\u001b[1mTrailhead demo (placeholder)\u001b[0m\r\n\r\n"]
+[0.60, "o", "This repo ships a real cast file so the README has a concrete artifact.\r\n"]
+[1.10, "o", "Replace this with a real 30s recording once you have a Loki/file dataset.\r\n\r\n"]
+[1.80, "o", "Flow to record in Cursor:\r\n"]
+[2.10, "o", "  - summarize_errors (source=loki, since=30m)\r\n"]
+[2.50, "o", "  - cite representative line_id(s)\r\n"]
+[2.90, "o", "  - get_lines_by_id to show evidence\r\n\r\n"]
+[3.60, "o", "To regenerate:\r\n"]
+[3.90, "o", "  asciinema rec -t \"Trailhead demo\" docs/demo/upload-500.cast\r\n\r\n"]
