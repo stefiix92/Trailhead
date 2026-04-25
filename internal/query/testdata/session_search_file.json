@@ -1,0 +1,27 @@
+{
+  "query": {
+    "end": "2026-04-25T11:00:00Z",
+    "filePath": "\u003ctempfile\u003e",
+    "limit": 10,
+    "query": "error",
+    "source": "file",
+    "start": "2026-04-25T10:00:00Z"
+  },
+  "count": 2,
+  "matches": [
+    {
+      "line_id": "file:4001",
+      "message": "ERROR timeout A",
+      "source": "file"
+    },
+    {
+      "line_id": "file:4002",
+      "message": "ERROR timeout B",
+      "source": "file"
+    }
+  ],
+  "line_ids": [
+    "file:4001",
+    "file:4002"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "query": {
+    "end": "2026-04-25T11:00:00Z",
+    "filePath": "\u003ctempfile\u003e",
+    "limit": 100,
+    "query": "",
+    "source": "file",
+    "start": "2026-04-25T10:00:00Z"
+  },
+  "total_lines": 4,
+  "clusters": [
+    {
+      "cluster_id": "c1",
+      "size": 3,
+      "signature": "ERROR timeout A",
+      "line_ids": [
+        "file:4001",
+        "file:4002",
+        "file:4003"
+      ],
+      "representative_line_ids": [
+        "file:4001",
+        "file:4002",
+        "file:4003"
+      ],
+      "cohesion_score": 1.9999999999999998
+    },
+    {
+      "cluster_id": "c2",
+      "size": 1,
+      "signature": "FATAL db down",
+      "line_ids": [
+        "file:4004"
+      ],
+      "representative_line_ids": [
+        "file:4004"
+      ],
+      "cohesion_score": 1
+    }
+  ],
+  "coverage_fraction": 1,
+  "too_small_for_confident_clustering": false,
+  "representative_per_cluster_max": 5
+}

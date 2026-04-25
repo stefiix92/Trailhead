@@ -31,12 +31,32 @@ jobs:
           go test ./... -coverprofile=cover.out
           echo ""
           echo "Coverage summary:"
-          go tool cover -func=cover.out | tail -n 1
+          total_line=$(go tool cover -func=cover.out | tail -n 1)
+          echo "$total_line"
+
+          # Enforce a minimum total coverage floor (raise over time).
+          min_cov="50.0"
+          pct=$(echo "$total_line" | awk '{gsub(/%/,"",$NF); print $NF}')
+          echo "Total coverage: ${pct}% (min ${min_cov}%)"
+          awk -v pct="$pct" -v min="$min_cov" 'BEGIN{exit !(pct+0 >= min+0)}' || {
+            echo "Coverage gate failed: ${pct}% < ${min_cov}%"
+            exit 1
+          }
+
+          # Optional HTML report for easier inspection.
+          go tool cover -html=cover.out -o cover.html
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverprofile
           path: cover.out
+          if-no-files-found: error
+
+      - name: Upload coverage HTML artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: cover.html
           if-no-files-found: error
 

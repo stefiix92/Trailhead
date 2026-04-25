@@ -60,8 +60,8 @@ func (b *FileBackend) Search(ctx context.Context, q SearchQuery) ([]Line, error)
 	return out, nil
 }
 
-var reErrorWord = regexp.MustCompile(`(?i)\b(error|exception|panic|fatal|err)\b`)
+var reErrorWord = regexp.MustCompile(`(?i)\b(error|errors|errored|exception|panic|fatal|err)\b`)
 
 func looksErrorLine(low string) bool {
-	return reErrorWord.MatchString(low) || strings.Contains(low, "error") || strings.Contains(low, "exception")
+	return reErrorWord.MatchString(low)
 }

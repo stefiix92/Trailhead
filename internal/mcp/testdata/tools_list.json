@@ -1,0 +1,305 @@
+{
+  "tools": [
+    {
+      "description": "Search logs with bounded, citeable results. Returns structured matches with stable session-scoped line IDs (source-prefixed: file:N, loki:N, docker:N, journald:N). When reporting findings, cite line_id values from matches. If a claim is not supported by a returned line_id, state that explicitly. For Loki, set source=loki and lokiService or lokiLogql, with since/start/end to bound time. For Docker, set source=docker and dockerContainer or dockerComposeService (optional time bounds apply if timestamps exist). For journald, set source=journald and optionally journaldUnit or journaldIdentifier.",
+      "inputSchema": {
+        "properties": {
+          "dockerComposeFilePath": {
+            "description": "Optional: compose file path (passed as -f).",
+            "type": "string"
+          },
+          "dockerComposeProject": {
+            "description": "Optional: docker compose project name (passed as --project-name).",
+            "type": "string"
+          },
+          "dockerComposeService": {
+            "description": "For source=docker, docker compose service name (resolved via `docker compose ps -q`).",
+            "type": "string"
+          },
+          "dockerContainer": {
+            "description": "For source=docker, container name or id for `docker logs`.",
+            "type": "string"
+          },
+          "end": {
+            "description": "RFC3339 end (optional, default now).",
+            "type": "string"
+          },
+          "filePath": {
+            "description": "For source=file, path to a log file.",
+            "type": "string"
+          },
+          "filterErrors": {
+            "description": "For file/docker/journald sources, only return lines that look like errors.",
+            "type": "boolean"
+          },
+          "journaldIdentifier": {
+            "description": "For source=journald, SYSLOG_IDENTIFIER match (journalctl field filter).",
+            "type": "string"
+          },
+          "journaldUnit": {
+            "description": "For source=journald, systemd unit (e.g. nginx.service).",
+            "type": "string"
+          },
+          "limit": {
+            "default": 20,
+            "maximum": 200,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "lokiLogql": {
+            "description": "For source=loki, full LogQL. If empty, built from lokiService/lokiStreamSelector and query.",
+            "type": "string"
+          },
+          "lokiService": {
+            "description": "Loki 'service' label value for {service=...} when lokiLogql is empty.",
+            "type": "string"
+          },
+          "lokiStreamSelector": {
+            "description": "Raw stream selector, e.g. {app=\"api\"}.",
+            "type": "string"
+          },
+          "query": {
+            "description": "Substring filter (file) or additional |= filter (loki) when lokiLogql is not set.",
+            "type": "string"
+          },
+          "since": {
+            "description": "Duration before end, e.g. 30m, 1h (Loki and time-bounded use).",
+            "type": "string"
+          },
+          "source": {
+            "default": "file",
+            "enum": [
+              "file",
+              "loki",
+              "docker",
+              "journald"
+            ],
+            "type": "string"
+          },
+          "start": {
+            "description": "RFC3339 start (optional).",
+            "type": "string"
+          },
+          "until": {
+            "description": "RFC3339 synonym for end.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "name": "search"
+    },
+    {
+      "description": "Fetch error-like log lines, cluster with TF–IDF similarity, and return counts, coverage, cluster ids, and representative line_ids. When reporting, cite line IDs from representative_line_ids or line_ids. Label uncited inferences as hypotheses.",
+      "inputSchema": {
+        "properties": {
+          "dockerComposeFilePath": {
+            "type": "string"
+          },
+          "dockerComposeProject": {
+            "type": "string"
+          },
+          "dockerComposeService": {
+            "type": "string"
+          },
+          "dockerContainer": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "journaldIdentifier": {
+            "type": "string"
+          },
+          "journaldUnit": {
+            "type": "string"
+          },
+          "lokiLogql": {
+            "description": "Full error-scoped LogQL; overrides heuristics if set.",
+            "type": "string"
+          },
+          "lokiService": {
+            "type": "string"
+          },
+          "lokiStreamSelector": {
+            "type": "string"
+          },
+          "maxLines": {
+            "default": 2000,
+            "description": "Max lines to pull before clustering.",
+            "type": "integer"
+          },
+          "since": {
+            "type": "string"
+          },
+          "source": {
+            "default": "file",
+            "enum": [
+              "file",
+              "loki",
+              "docker",
+              "journald"
+            ],
+            "type": "string"
+          },
+          "start": {
+            "type": "string"
+          },
+          "until": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "name": "summarize_errors"
+    },
+    {
+      "description": "After summarize_errors, fetch up to n full records for a cluster_id. Cite line_ids from the response.",
+      "inputSchema": {
+        "properties": {
+          "cluster_id": {
+            "type": "string"
+          },
+          "n": {
+            "default": 5,
+            "maximum": 200,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cluster_id"
+        ],
+        "type": "object"
+      },
+      "name": "sample_cluster"
+    },
+    {
+      "description": "List citeable log lines in a time window around an RFC3339 instant. Optional deploy markers from TRAILHEAD_MARKERS_FILE are included. Cite line_id values for any log claims.",
+      "inputSchema": {
+        "properties": {
+          "around": {
+            "description": "Center time RFC3339.",
+            "type": "string"
+          },
+          "dockerComposeFilePath": {
+            "type": "string"
+          },
+          "dockerComposeProject": {
+            "type": "string"
+          },
+          "dockerComposeService": {
+            "type": "string"
+          },
+          "dockerContainer": {
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "journaldIdentifier": {
+            "type": "string"
+          },
+          "journaldUnit": {
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "type": "integer"
+          },
+          "lokiService": {
+            "type": "string"
+          },
+          "lokiStreamSelector": {
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "file",
+              "loki",
+              "docker",
+              "journald"
+            ],
+            "type": "string"
+          },
+          "window": {
+            "description": "Total span (go duration e.g. 2m, 1h), default 2m.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "around"
+        ],
+        "type": "object"
+      },
+      "name": "correlated_events"
+    },
+    {
+      "description": "Compare counts of error-like lines between time window A (current) and B (defaults to same duration immediately before A). Requires source=loki. Cite any line-level claims with line_ids from other tools, not this aggregate alone.",
+      "inputSchema": {
+        "properties": {
+          "a_end": {
+            "type": "string"
+          },
+          "a_since": {
+            "description": "Duration of window A before its end (if a_start not set).",
+            "type": "string"
+          },
+          "a_start": {
+            "type": "string"
+          },
+          "b_end": {
+            "type": "string"
+          },
+          "b_since": {
+            "description": "Optional: duration of baseline window if b_start not set; else ignored.",
+            "type": "string"
+          },
+          "b_start": {
+            "type": "string"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "lokiService": {
+            "type": "string"
+          },
+          "lokiStreamSelector": {
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "loki"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "name": "diff_error_rate"
+    },
+    {
+      "description": "Fetch full log lines for previously returned LineIDs (session-scoped). Use this to let humans verify cited evidence.",
+      "inputSchema": {
+        "properties": {
+          "line_ids": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "line_ids"
+        ],
+        "type": "object"
+      },
+      "name": "get_lines_by_id"
+    }
+  ]
+}
