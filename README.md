@@ -42,6 +42,8 @@ docker pull ghcr.io/stefiix92/trailhead:v0.1.0
 
 The image includes `trailhead-mcp` and `trailhead` under `/trailhead-mcp` and `/trailhead`. The default entrypoint is stdio MCP (`/trailhead-mcp`).
 
+If you’re running a `docker compose` stack and want Trailhead to read logs from the other services, see [`docs/guides/docker-compose.md`](docs/guides/docker-compose.md).
+
 ## Configure in Cursor (MCP)
 
 Add a stdio server (paths absolute on your machine):
